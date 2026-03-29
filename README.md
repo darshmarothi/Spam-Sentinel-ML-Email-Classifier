@@ -25,24 +25,6 @@ An AI-powered email spam detection system that classifies emails as **Spam** or 
 
 ---
 
-## 📂 Project Structure
-spam-sentinel/
-│
-├── dataset/
-│ ├── combine.csv
-│ ├── inbox-1.csv
-│ ├── inbox-2.csv
-│
-├── model.pkl
-├── vectorizer.pkl
-├── train.py
-├── app.py
-├── index.html
-├── requirements.txt
-└── README.md
-
----
-
 ## ⚙️ How It Works
 
 1. Dataset is preprocessed and cleaned  
