@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spam Sentinel</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #0b0b0f;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0b0b0f;
+            border-bottom: 1px solid #222;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .container {
+            margin-top: 60px;
+            width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #111;
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #222;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            border-radius: 15px;
+            background: #0b0b0f;
+            border: 1px solid #333;
+            color: white;
+            padding: 15px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        textarea::placeholder {
+            color: #666;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            background: #ff7a00;
+            color: black;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #ff9500;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .spam {
+            color: #ff4d4d;
+        }
+
+        .notspam {
+            color: #00ff9d;
+        }
+
+        .loading {
+            color: #aaa;
+        }
+
+        .samples {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .sample {
+            flex: 1;
+            background: #111;
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid #222;
+            cursor: pointer;
+        }
+
+        .sample:hover {
+            background: #1a1a1a;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="logo">SPAM SENTINEL</div>
+</div>
+
+<div class="container">
+    <h1>LIVE CLASSIFIER</h1>
+    <p>Paste an email below to test the detection logic in real-time.</p>
+
+    <div class="card">
+        <textarea id="email" placeholder="e.g. You've won a free prize! Click here..."></textarea>
+
+        <button onclick="checkSpam()">Run Classification</button>
+
+        <div id="result"></div>
+    </div>
+
+    <div class="samples">
+        <div class="sample" onclick="fillSample('Meeting at 10 AM tomorrow')">
+            <b>Sample 1</b><br>
+            Meeting request (Not Spam)
+        </div>
+
+        <div class="sample" onclick="fillSample('Your account is compromised! Click link now!')">
+            <b>Sample 2</b><br>
+            Phishing attempt (Spam)
+        </div>
+    </div>
+</div>
+
+<script>
+function fillSample(text) {
+    document.getElementById("email").value = text;
+}
+
+async function checkSpam() {
+    const email = document.getElementById("email").value;
+    const resultDiv = document.getElementById("result");
+
+    resultDiv.innerText = "Analyzing...";
+    resultDiv.className = "loading";
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/predict", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email: email })
+        });
+
+        const data = await response.json();
+
+        if (data.result === "SPAM") {
+            resultDiv.innerText = "SPAM DETECTED";
+            resultDiv.className = "spam";
+        } else {
+            resultDiv.innerText = "NOT SPAM";
+            resultDiv.className = "notspam";
+        }
+
+    } catch (error) {
+        resultDiv.innerText = "Error connecting to backend";
+        resultDiv.className = "loading";
+    }
+}
+</script>
+
+</body>
+</html>

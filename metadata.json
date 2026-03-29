@@ -1,0 +1,5 @@
+{
+  "name": "Spam Sentinel: ML Email Classifier",
+  "description": "An end-to-end machine learning project for detecting spam emails using Python, Scikit-Learn, and TF-IDF vectorization.",
+  "requestFramePermissions": []
+}
